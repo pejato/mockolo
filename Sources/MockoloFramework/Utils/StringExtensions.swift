@@ -73,6 +73,10 @@ extension String {
     static let empty = ".empty()"
     static let observableEmpty = "Observable.empty()"
     static let rxObservableEmpty = "RxSwift.Observable.empty()"
+    static let anyPublisher = "AnyPublisher"
+    static let combineAnyPublisher = "Combine." + anyPublisher
+    static let anyPublisherLeftAngleBracket = anyPublisher + "<"
+    static let combinePublisherLeftAngleBracket = combineAnyPublisher + "<"
     static let `required` = "required"
     static let `convenience` = "convenience"
     static let closureArrow = "->"

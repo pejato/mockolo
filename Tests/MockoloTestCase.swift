@@ -127,7 +127,7 @@ class MockoloTestCase: XCTestCase {
                       concurrencyLimit: concurrencyLimit,
             onCompletion: { ret in
                 let output = (try? String(contentsOf: URL(fileURLWithPath: self.dstFilePath), encoding: .utf8)) ?? ""
-                let outputContents = output.components(separatedBy:  .whitespacesAndNewlines).filter{!$0.isEmpty}
+                let outputContents = output.components(separatedBy: .whitespacesAndNewlines).filter{!$0.isEmpty}
                 let fixtureContents = formattedDstContent.components(separatedBy: .whitespacesAndNewlines).filter{!$0.isEmpty}
                 #if TEST
                 print(output)

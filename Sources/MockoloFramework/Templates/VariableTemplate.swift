@@ -204,6 +204,23 @@ extension VariableModel {
         }
         return nil
     }
+    
+    func applyCombineVariableTemplate(name: String,
+                                      type: Type,
+                                      encloser: String,
+                                      isStatic: Bool,
+                                      shouldOverride: Bool,
+                                      accessLevel: String,
+                                      overrideTypes: [String: String]?) -> String? {
+        
+        let typeName = type.typeName
+        guard let range = typeName.range(of: String.anyPublisherLeftAngleBracket),
+            let lastIdx = typeName.lastIndex(of: ">") else {
+                return nil
+        }
+        
+        return "abc"
+    }
 }
 
 

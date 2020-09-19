@@ -363,38 +363,42 @@ public final class Type {
     }
 
     func parseRxVar(overrides: [String: String]?, overrideKey: String, isInitParam: Bool) -> (String?, String?, String?) {
-        if typeName.hasPrefix(String.observableLeftAngleBracket) || typeName.hasPrefix(String.rxObservableLeftAngleBracket),
-            let range = typeName.range(of: String.observableLeftAngleBracket), let lastIdx = typeName.lastIndex(of: ">") {
-            let typeParamStr = typeName[range.upperBound..<lastIdx]
-
-            var subjectKind = ""
-            var underlyingSubjectType = ""
-            if let overrideTypes = overrides {
-                if let val = overrideTypes[overrideKey], val.hasSuffix(String.subjectSuffix) {
-                    subjectKind = val
-                } else if let val = overrideTypes["all"], val.hasSuffix(String.subjectSuffix) {
-                    subjectKind = val
-                }
-            }
-
-            if subjectKind.isEmpty {
-                subjectKind = String.publishSubject
-            }
-            underlyingSubjectType = "\(subjectKind)<\(typeParamStr)>"
-
-            var underlyingSubjectTypeDefaultVal: String? = nil
-            if subjectKind == String.publishSubject {
-                underlyingSubjectTypeDefaultVal = "\(underlyingSubjectType)()"
-            } else if subjectKind == String.replaySubject {
-                underlyingSubjectTypeDefaultVal = "\(underlyingSubjectType)\(String.replaySubjectCreate)"
-            } else if subjectKind == String.behaviorSubject {
-                if let val = Type(String(typeParamStr)).defaultSingularVal(isInitParam: isInitParam, overrides: overrides, overrideKey: overrideKey) {
-                    underlyingSubjectTypeDefaultVal = "\(underlyingSubjectType)(value: \(val))"
-                }
-            }
-            return (underlyingSubjectType, String(typeParamStr), underlyingSubjectTypeDefaultVal)
+        guard typeName.hasPrefix(String.observableLeftAngleBracket) ||
+            typeName.hasPrefix(String.rxObservableLeftAngleBracket),
+            let range = typeName.range(of: String.observableLeftAngleBracket),
+            let lastIdx = typeName.lastIndex(of: ">") else {
+                return (nil, nil, nil)
         }
-        return (nil, nil, nil)
+        
+        let typeParamStr = typeName[range.upperBound..<lastIdx]
+
+        var subjectKind = ""
+        var underlyingSubjectType = ""
+        if let overrideTypes = overrides {
+            if let val = overrideTypes[overrideKey], val.hasSuffix(String.subjectSuffix) {
+                subjectKind = val
+            } else if let val = overrideTypes["all"], val.hasSuffix(String.subjectSuffix) {
+                subjectKind = val
+            }
+        }
+
+        if subjectKind.isEmpty {
+            subjectKind = String.publishSubject
+        }
+        underlyingSubjectType = "\(subjectKind)<\(typeParamStr)>"
+
+        var underlyingSubjectTypeDefaultVal: String? = nil
+        if subjectKind == String.publishSubject {
+            underlyingSubjectTypeDefaultVal = "\(underlyingSubjectType)()"
+        } else if subjectKind == String.replaySubject {
+            underlyingSubjectTypeDefaultVal = "\(underlyingSubjectType)\(String.replaySubjectCreate)"
+        } else if subjectKind == String.behaviorSubject {
+            if let val = Type(String(typeParamStr)).defaultSingularVal(isInitParam: isInitParam, overrides: overrides, overrideKey: overrideKey) {
+                underlyingSubjectTypeDefaultVal = "\(underlyingSubjectType)(value: \(val))"
+            }
+        }
+        
+        return (underlyingSubjectType, String(typeParamStr), underlyingSubjectTypeDefaultVal)
     }
 
     private func parseDefaultVal(isInitParam: Bool) -> String? {
